@@ -7,10 +7,10 @@ mittels AES-256-GCM Verschlüsselung.
 
 import os
 import hashlib
+import base64
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2
 from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.backends import default_backend
 
 
 class CryptoManager:
@@ -40,8 +40,7 @@ class CryptoManager:
             algorithm=hashes.SHA256(),
             length=CryptoManager.KEY_SIZE,
             salt=salt,
-            iterations=CryptoManager.ITERATIONS,
-            backend=default_backend()
+            iterations=CryptoManager.ITERATIONS
         )
         
         key = kdf.derive(password.encode())
@@ -59,8 +58,6 @@ class CryptoManager:
         Returns:
             Base64-kodierter verschlüsselter Text (salt + nonce + ciphertext + tag)
         """
-        import base64
-        
         # Schlüssel ableiten
         key, salt = CryptoManager.derive_key(password)
         
@@ -92,8 +89,6 @@ class CryptoManager:
         Raises:
             ValueError: Wenn Entschlüsselung fehlschlägt
         """
-        import base64
-        
         try:
             # Dekodieren
             encrypted = base64.b64decode(ciphertext_b64)
